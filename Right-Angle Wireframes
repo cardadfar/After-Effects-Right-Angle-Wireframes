@@ -1,0 +1,53 @@
+var thisComp = app.project.activeItem;
+
+new_wire("wireframe_01");
+new_wire("wireframe_02");
+new_wire("wireframe_03");
+new_wire("wireframe_04");
+
+
+function clear_layers() {
+    var len = thisComp.numLayers;
+    for(var i = 0; i < len; i++)
+        thisComp.layer(1).remove();
+}
+
+function new_wire(name) {
+    var shapeLayer = thisComp.layers.addShape(); 
+    var shapeGroup = shapeLayer.property("ADBE Root Vectors Group"); 
+    shapeGroup.addProperty("ADBE Vector Shape - Group"); 
+    var stroke = shapeGroup.addProperty("ADBE Vector Graphic - Stroke");
+    stroke.property("Stroke Width").setValue([2]);
+    stroke.property("Color").setValue([67,186,228]);
+    
+    
+    var shape = new Shape();
+    var temp = [];
+    temp[0] = [0,0];
+    for(var i = 0; i < 200; i++) {
+        if(Math.random() < 0.5) {
+            var scl = Math.random();
+            while(scl < 0.5)
+                scl = Math.random();
+            var dx = scl*200;  //dx is between [100,200]
+        }
+        else {
+            var scl = Math.random();
+            while(scl < 0.5)
+                scl = Math.random();
+             var dx = -scl*200; //dx is between [-200,-100]
+        }
+    
+        var i = temp.length;
+        if(Math.random() < 0.5)  //picks an axis
+            temp[i] = [temp[i-1][0] + dx, temp[i-1][1]];
+        else 
+            temp[i] = [temp[i-1][0], temp[i-1][1] + dx];
+    }
+    shape.vertices= temp
+    shape.closed = false;
+    
+    shapeGroup.property(1).property("ADBE Vector Shape").setValue(shape);
+    
+    shapeLayer.name = name;
+}
